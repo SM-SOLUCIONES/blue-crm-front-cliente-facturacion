@@ -1,0 +1,19 @@
+echo "🔍 Running lint..."
+npm run lint -- --fix
+
+if [ $? -ne 0 ]; then
+  echo "❌ Linting failed! Please fix the errors before committing."
+  exit 1
+fi
+
+echo "✅ Linting passed!"
+
+echo "🧪 Running tests with coverage (min 80%)..."
+npm test -- --watch=false --coverage
+
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed or coverage below 80%! Fix tests and ensure coverage meets the threshold."
+  exit 1
+fi
+
+echo "✅ Tests and coverage passed!"
