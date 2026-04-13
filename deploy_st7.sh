@@ -8,7 +8,7 @@ nombre="blue-crm-front-cliente-facturacion"
 entorno="staging"
 env="st7"
 
-path="cliente-facturacion"
+path="mf/cliente-facturacion"
 html_folder="/var/www/${nombre}"
 dist_folder="dist/bod-cliente-facturacion/browser"
 project_dir="/home/${nombre}"
