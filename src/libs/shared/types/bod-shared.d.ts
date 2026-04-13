@@ -179,7 +179,7 @@ declare class PanelPageHeader {
 }
 
 interface PaginatedVistaColumn {
-    type: 'text' | 'number' | 'boolean' | 'date' | 'list';
+    type: 'text' | 'number' | 'boolean' | 'date' | 'list' | 'currency';
     header: string;
     key: string;
     sortable?: boolean;
@@ -284,9 +284,7 @@ interface LegacyPaginatorOptions<T> {
     fetchData(request: LegacyPaginationRequest): Observable<LegacyPagination<T>>;
 }
 
-type PaginationFilter = {
-    [key: string]: FilterMetadata | FilterMetadata[] | undefined;
-};
+type PaginationFilter = Record<string, FilterMetadata | FilterMetadata[] | undefined>;
 interface MultiSortMeta {
     field: string;
     order: number;
