@@ -39,12 +39,12 @@
                 }
               ]
             },
-            "staging": {
-              "target": "bod-cliente-facturacion:esbuild:staging",
+            "st7": {
+              "target": "bod-cliente-facturacion:esbuild:st7",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
+                  "with": "src/environments/environment.st7.ts"
                 }
               ]
             }
@@ -64,8 +64,8 @@
             "development": {
               "target": "bod-cliente-facturacion:serve-original:development"
             },
-            "staging": {
-              "target": "bod-cliente-facturacion:serve-original:staging"
+            "st7": {
+              "target": "bod-cliente-facturacion:serve-original:st7"
             }
           },
           "defaultConfiguration": "development"
@@ -130,7 +130,7 @@
                 }
               ]
             },
-            "staging": {
+            "st7": {
               "budgets": [
                 {
                   "type": "initial",
@@ -147,7 +147,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
+                  "with": "src/environments/environment.st7.ts"
                 }
               ]
             }
@@ -163,8 +163,8 @@
             "development": {
               "buildTarget": "bod-cliente-facturacion:esbuild:development"
             },
-            "staging": {
-              "buildTarget": "bod-cliente-facturacion:esbuild:staging"
+            "st7": {
+              "buildTarget": "bod-cliente-facturacion:esbuild:st7"
             }
           },
           "defaultConfiguration": "development",
