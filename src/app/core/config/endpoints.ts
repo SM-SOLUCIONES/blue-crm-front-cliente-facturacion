@@ -1,7 +1,14 @@
 import { Endpoint } from '@bod/shared';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 
 export const ENDPOINTS = {
+  CUENTA_CORRIENTE: {
+    GET_CLIENTE_CC_MOVIMIENTOS_PAGINATION: new Endpoint(
+      'cuenta-corriente/cliente/movimiento/paginar',
+      'POST',
+      environment.apiBaseUrl,
+    ),
+  },
   COBRANZAS: {
     CREATE_PAGO: new Endpoint('cobranza/pagos/crear', 'POST', environment.apiBaseUrl),
   },
