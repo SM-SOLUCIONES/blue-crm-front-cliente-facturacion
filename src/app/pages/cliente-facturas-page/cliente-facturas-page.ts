@@ -16,13 +16,13 @@ import { ClienteFactura } from '../../core/models';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
-  selector: 'bod-cliente-facturas',
-  imports: [PanelPageHeader, DataTable, TableToolbar, ButtonModule],
-  templateUrl: './cliente-facturas.html',
+  selector: 'bod-cliente-facturas-page',
+  imports: [DataTable, TableToolbar, ButtonModule],
+  templateUrl: './cliente-facturas-page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClienteFacturas implements OnInit {
+export class ClienteFacturasPage implements OnInit {
   private readonly facturacionApi = inject(FacturacionApi);
   private readonly cobranzasApi = inject(CobranzasApi);
 

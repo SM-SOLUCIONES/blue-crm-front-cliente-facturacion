@@ -1,0 +1,21 @@
+<bod-panel-page-header [title]="'Facturación'" />
+
+<div class="flex flex-col gap-4">
+  <p-tabs value="facturas">
+    <p-tablist>
+      <p-tab routerLink="facturas" value="facturas" class="flex items-center !gap-2 text-inherit">
+        <i class="pi pi-file-o"></i>
+        <span>Facturas</span>
+      </p-tab>
+      <p-tab
+        routerLink="cc-movimientos"
+        value="cc-movimientos"
+        class="flex items-center !gap-2 text-inherit"
+      >
+        <i class="pi pi-money-bill"></i>
+        <span>Pagos/Movimientos de CC</span>
+      </p-tab>
+    </p-tablist>
+  </p-tabs>
+  <router-outlet />
+</div>

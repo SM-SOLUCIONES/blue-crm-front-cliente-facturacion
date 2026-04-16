@@ -1,4 +1,4 @@
-name: Deploy Cliente Facturacion (st7)
+name: Deploy Cliente Facturación (st7)
 
 on:
   push:
