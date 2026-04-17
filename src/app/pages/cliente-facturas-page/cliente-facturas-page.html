@@ -1,10 +1,10 @@
 @if (paginator(); as _paginator) {
-  <bod-data-table #dt [dataSource]="_paginator" [columns]="columnas()" [showActionsColumn]="true">
-    <ng-template #rowActions let-row>
-      @if (row.estadoFactura === 'PENDIENTE') {
-        <p-button label="PAGAR" outlined rounded (onClick)="createPago(row)" />
-      }
-    </ng-template>
+  <bod-data-table
+    #dt
+    [dataSource]="_paginator"
+    [columns]="columnas()"
+    [rowActionsBuilder]="rowActionsBuilder"
+  >
     <ng-template #caption>
       <bod-table-toolbar
         (searchChange)="dt.filterGlobal($event, 'contains')"

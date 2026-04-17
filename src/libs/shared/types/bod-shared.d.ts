@@ -4,8 +4,9 @@ import { SafeUrl } from '@angular/platform-browser';
 import * as _angular_forms from '@angular/forms';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Subscription, Subject, Observable } from 'rxjs';
-import { MenuItem, FilterMetadata, Confirmation, ToastMessageOptions } from 'primeng/api';
+import { MenuItem, FilterMetadata, MenuItemCommandEvent, Confirmation, ToastMessageOptions } from 'primeng/api';
 import { TableLazyLoadEvent, Table } from 'primeng/table';
+import { ButtonSeverity } from 'primeng/button';
 
 declare class LocalizedDatePipe implements PipeTransform {
     private readonly translateService;
@@ -515,6 +516,35 @@ declare class LegacyDataSourcePaginator<T> {
 }
 
 /**
+ * Permite sobrescribir el render de una celda para una columna (por `column.key`),
+ * ignorando el `type` de la columna.
+ *
+ * Uso:
+ * `<ng-template bodDataTableCell="items" let-row let-column="column"> ... </ng-template>`
+ */
+declare class DataTableCellTemplateDirective<T = unknown> {
+    readonly templateRef: TemplateRef<T>;
+    readonly bodDataTableCell: _angular_core.InputSignal<string>;
+    constructor(templateRef: TemplateRef<T>);
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<DataTableCellTemplateDirective<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<DataTableCellTemplateDirective<any>, "ng-template[bodDataTableCell]", never, { "bodDataTableCell": { "alias": "bodDataTableCell"; "required": true; "isSignal": true; }; }, {}, never, never, true, never>;
+}
+
+interface RowAction<T extends object> extends Omit<MenuItem, 'command'> {
+    visible: boolean;
+    icon: string;
+    label?: string;
+    disabled?: boolean;
+    tooltip?: string;
+    severity?: ButtonSeverity;
+    badge?: string;
+    command: (event: MenuItemCommandEvent) => void;
+}
+type RowActionsSplit<T extends object> = {
+    visible: RowAction<T>[];
+    overflow: RowAction<T>[];
+};
+/**
  * Contrato mínimo que debe cumplir la fuente de datos de la tabla
  * (p. ej. DataSourcePaginator de @bod/shared).
  */
@@ -523,24 +553,37 @@ declare class DataTable<T extends object> {
     readonly dataSource: _angular_core.InputSignal<DataSourcePaginator<T>>;
     /** Definición de columnas (header + entityName para acceder al valor en la fila) */
     readonly columns: _angular_core.InputSignal<PaginatedVistaColumn[]>;
+    /** Modo de visualización: tabla o cards. */
+    readonly viewMode: _angular_core.WritableSignal<"table" | "cards">;
+    readonly viewModeOptions: Array<{
+        label: string;
+        value: 'table' | 'cards';
+        icon: string;
+    }>;
     /** Si se muestra la columna de acciones (primera columna). Por defecto true */
     readonly showActionsColumn: _angular_core.InputSignal<boolean>;
-    readonly rowActions: _angular_core.InputSignal<MenuItem[]>;
-    readonly rowActionClicked: _angular_core.OutputEmitterRef<T | null>;
-    readonly visibleRowActions: _angular_core.Signal<MenuItem[]>;
-    readonly visibleRowActionsLength: _angular_core.Signal<number>;
-    readonly rowActionsTemplate: _angular_core.Signal<TemplateRef<unknown> | undefined>;
+    readonly rowActionsBuilder: _angular_core.InputSignal<(row: T) => RowAction<T>[]>;
+    readonly maxVisibleRowActions: _angular_core.InputSignal<number>;
     readonly captionTemplate: _angular_core.Signal<TemplateRef<unknown> | undefined>;
+    /** Templates por columna (`column.key`) para sobrescribir el render de la celda. */
+    readonly cellTemplates: _angular_core.Signal<readonly DataTableCellTemplateDirective<any>[]>;
+    readonly cellTemplatesByKey: _angular_core.Signal<Map<string, TemplateRef<unknown>>>;
+    cellTemplateFor(key: string): TemplateRef<unknown> | null;
     /** Altura del scroll del body (p. ej. '500px'). Por defecto '500px' */
     readonly scrollHeight: _angular_core.InputSignal<string>;
     /** Opciones de filas por página */
     readonly rowsPerPageOptions: _angular_core.InputSignal<number[]>;
     readonly dt: _angular_core.Signal<Table<any> | undefined>;
+    private isRowActionVisible;
+    private getRowActions;
+    splitRowActions(row: T): RowActionsSplit<T>;
+    buildRowActionsMenu(row: T): MenuItem[];
+    /** Se usa para decidir si renderizar la columna "Acciones". */
+    readonly hasAnyRowActions: _angular_core.Signal<boolean>;
     onLazyLoad(event: TableLazyLoadEvent): void;
-    onRowActionClick(menuItem: MenuItem, event: MouseEvent, row: T): void;
     filterGlobal(value: string, matchMode: string): void;
     static ɵfac: _angular_core.ɵɵFactoryDeclaration<DataTable<any>, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<DataTable<any>, "bod-data-table", never, { "dataSource": { "alias": "dataSource"; "required": true; "isSignal": true; }; "columns": { "alias": "columns"; "required": false; "isSignal": true; }; "showActionsColumn": { "alias": "showActionsColumn"; "required": false; "isSignal": true; }; "rowActions": { "alias": "rowActions"; "required": false; "isSignal": true; }; "scrollHeight": { "alias": "scrollHeight"; "required": false; "isSignal": true; }; "rowsPerPageOptions": { "alias": "rowsPerPageOptions"; "required": false; "isSignal": true; }; }, { "rowActionClicked": "rowActionClicked"; }, ["rowActionsTemplate", "captionTemplate"], never, true, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<DataTable<any>, "bod-data-table", never, { "dataSource": { "alias": "dataSource"; "required": true; "isSignal": true; }; "columns": { "alias": "columns"; "required": false; "isSignal": true; }; "showActionsColumn": { "alias": "showActionsColumn"; "required": false; "isSignal": true; }; "rowActionsBuilder": { "alias": "rowActionsBuilder"; "required": false; "isSignal": true; }; "maxVisibleRowActions": { "alias": "maxVisibleRowActions"; "required": false; "isSignal": true; }; "scrollHeight": { "alias": "scrollHeight"; "required": false; "isSignal": true; }; "rowsPerPageOptions": { "alias": "rowsPerPageOptions"; "required": false; "isSignal": true; }; }, {}, ["captionTemplate", "cellTemplates"], never, true, never>;
 }
 
 declare class AuthState {
@@ -666,5 +709,5 @@ declare const ACCESS_TOKEN_KEY = "access-token";
 
 declare const GLOBAL_TOAST_KEY = "global-toast";
 
-export { ACCESS_TOKEN_KEY, AuthState, CONFIRM_CHANGES_DIALOG_KEY, CONFIRM_DIALOG_KEY, ConfirmService, DISPLAY_MODE_KEY, DataSourcePaginator, DataTable, DataTableBuilder, DisplayMode, EmptyMessage, Endpoint, FormDialog, FormDialogWrapper, FormField, FormFieldControl, FormFieldHint, FormFieldLabel, FormFieldValidationErrors, GLOBAL_TOAST_KEY, LANGUAGE_KEY, LegacyDataSourcePaginator, LoadState, LoadStateHandler, LoadingIndicator, LocalizedDatePipe, LocalizedKeysPipe, MenuItemsLocalizer, PaginationFilterOperation, PanelPageHeader, TableToolbar, ThemeService, ThemeToggleButton, ToastService, VIEWPORT_BREAKPOINTS, ViewportService, getDirtyFormValue, shouldShowValidationErrors };
-export type { AuthUser, Column, GetDirtyFormValueOptions, LegacyPagination, LegacyPaginationFilter, LegacyPaginationRequest, LegacyPaginationRequestFilter, LegacyPaginationRequestOrder, LegacyPaginatorOptions, MultiSortMeta, PaginatedVista, PaginatedVistaColumn, Pagination, PaginationFilter, PaginationRequest, PaginationRequestOrder, PaginatorOptions, ViewportBreakpoint };
+export { ACCESS_TOKEN_KEY, AuthState, CONFIRM_CHANGES_DIALOG_KEY, CONFIRM_DIALOG_KEY, ConfirmService, DISPLAY_MODE_KEY, DataSourcePaginator, DataTable, DataTableBuilder, DataTableCellTemplateDirective, DisplayMode, EmptyMessage, Endpoint, FormDialog, FormDialogWrapper, FormField, FormFieldControl, FormFieldHint, FormFieldLabel, FormFieldValidationErrors, GLOBAL_TOAST_KEY, LANGUAGE_KEY, LegacyDataSourcePaginator, LoadState, LoadStateHandler, LoadingIndicator, LocalizedDatePipe, LocalizedKeysPipe, MenuItemsLocalizer, PaginationFilterOperation, PanelPageHeader, TableToolbar, ThemeService, ThemeToggleButton, ToastService, VIEWPORT_BREAKPOINTS, ViewportService, getDirtyFormValue, shouldShowValidationErrors };
+export type { AuthUser, Column, GetDirtyFormValueOptions, LegacyPagination, LegacyPaginationFilter, LegacyPaginationRequest, LegacyPaginationRequestFilter, LegacyPaginationRequestOrder, LegacyPaginatorOptions, MultiSortMeta, PaginatedVista, PaginatedVistaColumn, Pagination, PaginationFilter, PaginationRequest, PaginationRequestOrder, PaginatorOptions, RowAction, ViewportBreakpoint };

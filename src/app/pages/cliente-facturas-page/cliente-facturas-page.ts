@@ -9,6 +9,7 @@ import {
   TableToolbar,
   PaginationRequest,
   Pagination,
+  RowAction,
 } from '@bod/shared';
 import { MenuItem } from 'primeng/api';
 import { FacturacionApi, CobranzasApi } from '../../core/api';
@@ -31,6 +32,15 @@ export class ClienteFacturasPage implements OnInit {
   public paginator = signal<DataSourcePaginator<ClienteFactura> | undefined>(undefined);
 
   public readonly pageActions = signal<MenuItem[]>([]);
+
+  public readonly rowActionsBuilder = (row: ClienteFactura): RowAction<ClienteFactura>[] => [
+    {
+      label: 'Pagar',
+      icon: 'pi pi-dollar',
+      visible: row.estadoFactura === 'PENDIENTE',
+      command: () => this.createPago(row),
+    },
+  ];
 
   ngOnInit(): void {
     this.loadVistas();
